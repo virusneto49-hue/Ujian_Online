@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASESMEN SUMATIF SDN 1 KETAB_ON LINE</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes morphBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .morph-gradient {
+            background: linear-gradient(-45deg, #f3f4f6, #e5e7eb, #d1d5db, #f3f4f6);
+            background-size: 400% 400%;
+            animation: morphBg 12s ease infinite;
+        }
+        @keyframes pulseYellow {
+            0%, 100% { background-color: rgba(234, 179, 8, 0.95); }
+            50% { background-color: rgba(250, 204, 21, 0.7); }
+        }
+        .bg-warning-flash {
+            animation: pulseYellow 1.2s infinite;
+        }
+    </style>
+</head>
+<body class="morph-gradient min-h-screen flex items-center justify-center p-4 font-sans select-none overflow-x-hidden">
+
+    <!-- KARTU UTAMA INTRO & LOGIN -->
+    <div id="introCard" class="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-6 sm:p-8 max-w-md w-full border border-gray-100 animate-fade-in relative z-10 transition-all duration-500">
+        <!-- Background Kartu Warna-Warni Elegan -->
+        <div class="absolute -top-3 -right-3 w-24 h-24 bg-gradient-to-tr from-emerald-400 to-teal-500 rounded-full blur-xl opacity-40 pointer-events-none"></div>
+        <div class="absolute -bottom-3 -left-3 w-24 h-24 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full blur-xl opacity-40 pointer-events-none"></div>
+
+        <div class="text-center relative z-10">
+            <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-full mb-3 tracking-wide">
+                SISTEM UJIAN TERINTEGRASI
+            </span>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight mb-2">
+                🖨️ ASESMEN SUMATIF<br><span class="text-emerald-600">SDN 1 KETAB_ON LINE</span>
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-500 mb-6">
+                Masukkan token akses resmi yang diberikan oleh pengawas ujian untuk memulai.
+            </p>
+        </div>
+
+        <!-- Aturan Ujian -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6 text-xs sm:text-sm text-slate-700 space-y-2 relative z-10">
+            <p class="font-bold text-slate-800 border-b pb-1.5 flex items-center justify-between">
+                <span>⚠️ ATURAN TATA TERTIB:</span>
+                <span class="text-red-600 font-extrabold text-xs">MAKS 3x PELANGGARAN</span>
+            </p>
+            <div class="grid grid-cols-1 gap-1.5 pt-1">
+                <div class="flex items-center text-red-600 font-medium">
+                    <span class="mr-2">❎</span> Dilarang Pindah Tab / Berpindah Aplikasi
+                </div>
+                <div class="flex items-center text-red-600 font-medium">
+                    <span class="mr-2">❎</span> Dilarang Keluar Layar Penuh (Fullscreen)
+                </div>
+                <div class="flex items-center text-emerald-700 font-medium">
+                    <span class="mr-2">☑️</span> Sentuh Layar / Navigasi Normal (Aman)
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Input Token -->
+        <div class="space-y-4 relative z-10">
+            <div>
+                <label class="block text-xs font-bold text-slate-600 uppercase mb-1.5">Token Ujian Masuk</label>
+                <input type="password" id="tokenInput" placeholder="Masukkan Token (Contoh: 654321)" 
+                    class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center font-bold tracking-widest text-slate-800 shadow-sm transition">
+                <p id="errorMsg" class="text-red-500 text-xs mt-1.5 text-center font-medium hidden">Token salah! Silakan coba lagi.</p>
+            </div>
+
+            <button onclick="validateToken()" 
+                class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/30 transform hover:-translate-y-0.5 active:translate-y-0 transition duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base">
+                <span>MULAI UJIAN</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </button>
+        </div>
+        
+        <div class="text-center mt-5 text-[11px] text-slate-400">
+            Sistem Pengawasan Otomatis Teraktifkan
+        </div>
+    </div>
+
+    <!-- LAYAR PELANGGARAN / DISKUALIFIKASI -->
+    <div id="violationScreen" class="fixed inset-0 bg-red-600 z-50 flex flex-col items-center justify-center p-6 text-white text-center hidden">
+        <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl max-w-md w-full border border-white/20 shadow-2xl animate-fade-in">
+            <div class="text-5xl mb-4">🚨</div>
+            <h2 class="text-2xl font-black mb-2 tracking-wide">ANDA MELAKUKAN KECURANGAN!</h2>
+            <p id="violationReason" class="text-sm text-red-100 mb-6 font-medium">Sistem mendeteksi perpindahan tab atau keluar dari mode fullscreen.</p>
+            
+            <div id="recoveryStatusBox" class="bg-black/20 p-4 rounded-xl mb-4 text-xs font-semibold">
+                Sistem dikunci sementara. Mohon tunggu pemulihan...
+            </div>
+
+            <!-- Form Token Pemulihan (Muncul setelah 5 detik) -->
+            <div id="recoveryContainer" class="hidden space-y-3 pt-2 border-t border-white/20">
+                <p class="text-xs text-yellow-200 font-bold">Masukkan Token Pemulihan dari Pengawas:</p>
+                <input type="password" id="recoveryTokenInput" placeholder="Masukkan Token Pemulihan" 
+                    class="w-full px-4 py-2.5 bg-white text-slate-900 border-none rounded-lg focus:ring-2 focus:ring-yellow-400 text-center font-bold tracking-widest text-sm">
+                <button onclick="validateRecoveryToken()" 
+                    class="w-full py-2.5 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-extrabold rounded-lg shadow transition text-sm">
+                    VERIFIKASI PEMULIHAN
+                </button>
+                <p id="recoveryErrorMsg" class="text-yellow-200 text-xs hidden font-bold">Token pemulihan salah!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- KONTORL UJIAN & FORM GOOGLE -->
+    <div id="examContainer" class="fixed inset-0 bg-white z-40 hidden flex flex-col">
+        <!-- Header Info Ujian & Status Pelanggaran -->
+        <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between shadow-md">
+            <div class="flex items-center space-x-3">
+                <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
+                <span class="text-xs sm:text-sm font-bold tracking-wide">ASESMEN SUMATIF - BERLANGSUNG</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <div class="bg-slate-800 px-3 py-1 rounded-lg text-xs font-medium border border-slate-700">
+                    Sisa Pelanggaran: <span id="violationCountBadge" class="text-emerald-400 font-bold">3</span> / 3
+                </div>
+            </div>
+        </div>
+        
+        <!-- Embed Google Form Ujian -->
+        <div class="flex-1 w-full relative bg-slate-100">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdWy7aPRu6O_NxbFi0AFnirR2aIgCcYFZawChipgHNA5Tr6KA/viewform?embedded=true" 
+                class="w-full h-full border-0" frameborder="0" marginheight="0" marginwidth="0">Memuat...</iframe>
+        </div>
+    </div>
+
+    <!-- Script Logika Keamanan & Anti-Curang -->
+    <script>
+        let currentViolations = 0;
+        const maxViolations = 3;
+        let isExamActive = false;
+        let recoveryUnlockedTotal = false;
+
+        // Fungsi Pemutar Suara Peringatan Bahasa Indonesia
+        function playWarningSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Bersihkan antrean sebelumnya
+                let utterance = new SpeechSynthesisUtterance("Anda melakukan kecurangan");
+                utterance.lang = 'id-ID';
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Validasi Token Masuk Awal
+        function validateToken() {
+            const token = document.getElementById('tokenInput').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+
+            if (token === "654321") {
+                errorMsg.classList.add('hidden');
+                enterFullscreenAndStart();
+            } else {
+                errorMsg.classList.remove('hidden');
+                document.getElementById('tokenInput').value = "";
+            }
+        }
+
+        // Masuk Fullscreen dan Aktifkan Ujian
+        function enterFullscreenAndStart() {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(err => {
+                    console.log("Fullscreen request was prevented or handled:", err);
+                });
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+
+            isExamActive = true;
+            document.getElementById('introCard').classList.add('hidden');
+            document.getElementById('examContainer').classList.remove('hidden');
+        }
+
+        // Deteksi Pelanggaran (Pindah Tab / Keluar Fullscreen)
+        function triggerViolation(reason) {
+            if (!isExamActive) return;
+
+            currentViolations++;
+            document.getElementById('violationCountBadge').innerText = (maxViolations - currentViolations);
+            
+            // Putar Suara Peringatan
+            playWarningSpeech();
+
+            if (currentViolations >= maxViolations) {
+                // Diskualifikasi Total (Batas Maksimal Terlampaui)
+                activateDisqualificationScreen(reason);
+            } else {
+                // Peringatan Peringatan Dini / Pelanggaran Ke-1 & Ke-2
+                alert("PERINGATAN PELANGGARAN (" + currentViolations + "/" + maxViolations + "):\n" + reason + "\n\nAnda dilarang pindah tab atau keluar dari mode fullscreen!");
+            }
+        }
+
+        // Layar Diskualifikasi / Pemulihan Menunggu 15 Detik
+        function activateDisqualificationScreen(reason) {
+            isExamActive = false;
+            
+            // Sembunyikan Konten Ujian, Tampilkan Layar Merah / Kuning Berkedip
+            document.getElementById('examContainer').classList.add('hidden');
+            const vScreen = document.getElementById('violationScreen');
+            vScreen.classList.remove('hidden');
+            vScreen.className = "fixed inset-0 bg-red-600 z-50 flex flex-col items-center justify-center p-6 text-white text-center";
+            
+            document.getElementById('violationReason').innerText = reason + " Batas 3x pelanggaran tercapai. Anda didiskualifikasi sementara.";
+            
+            let statusBox = document.getElementById('recoveryStatusBox');
+            statusBox.className = "bg-warning-flash text-slate-900 p-4 rounded-xl mb-4 text-xs sm:text-sm font-bold shadow-lg";
+            statusBox.innerHTML = "⚠️ DISKUALIFIKASI SEMENTARA. Layar pemulihan aktif.<br>Harap tunggu 15 detik pemulihan layar...";
+
+            // Hitung Mundur 15 Detik Pemulihan
+            let timeLeft = 15;
+            let countdownInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft > 10) {
+                    statusBox.innerHTML = `⚠️ DISKUALIFIKASI SEMENTARA. Mohon tunggu pemulihan... (${timeLeft}s)`;
+                } else if (timeLeft > 5) {
+                    statusBox.innerHTML = `⏳ Mempersiapkan kotak token login pemulihan... (${timeLeft}s)`;
+                } else if (timeLeft > 0) {
+                    statusBox.innerHTML = `🔓 Kotak token pemulihan segera terbuka... (${timeLeft}s)`;
+                } else {
+                    clearInterval(countdownInterval);
+                    statusBox.innerHTML = "✅ Silakan masukkan Token Pemulihan dari Pengawas Ujian.";
+                    statusBox.className = "bg-emerald-500 text-white p-3 rounded-xl mb-4 text-xs sm:text-sm font-bold shadow";
+                    
+                    // Munculkan Kotak Token Pemulihan
+                    document.getElementById('recoveryContainer').classList.remove('hidden');
+                }
+            }, 1000);
+        }
+
+        // Validasi Token Pemulihan ("123456")
+        function validateRecoveryToken() {
+            const recToken = document.getElementById('recoveryTokenInput').value.trim();
+            const recError = document.getElementById('recoveryErrorMsg');
+
+            if (recToken === "123456") {
+                recError.classList.add('hidden');
+                // Reset Pelanggaran setelah pemulihan (diberikan toleransi berulang sebanyak 2x pelanggaran berikutnya)
+                currentViolations = 0; 
+                document.getElementById('violationCountBadge').innerText = "2"; // Sisa pelanggaran direset jadi 2 setelah pemulihan
+                
+                // Sembunyikan layar diskualifikasi, kembalikan ke ujian & fullscreen
+                document.getElementById('violationScreen').classList.add('hidden');
+                document.getElementById('recoveryContainer').classList.add('hidden');
+                document.getElementById('recoveryTokenInput').value = "";
+                
+                // Masuk ulang ke ujian & aktifkan kembali
+                enterFullscreenAndStart();
+            } else {
+                recError.classList.remove('hidden');
+                document.getElementById('recoveryTokenInput').value = "";
+            }
+        }
+
+        // Listener: Tab Visibility Change (Pindah Tab / Minimize)
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden && isExamActive) {
+                triggerViolation("Anda terdeteksi berpindah tab atau meminimalkan browser!");
+            }
+        });
+
+        // Listener: Fullscreen Change (Keluar Fullscreen)
+        document.addEventListener("fullscreenchange", function() {
+            if (!document.fullscreenElement && isExamActive) {
+                triggerViolation("Anda keluar dari mode layar penuh (Fullscreen)!");
+            }
+        });
+
+        // Mencegah klik kanan atau shortcut inspect element standar untuk pengamanan ekstra
+        document.addEventListener("contextmenu", function(e) {
+            if (isExamActive) e.preventDefault();
+        });
+    </script>
+</body>
+</html>
